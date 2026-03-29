@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Backend API (Express/TypeScript)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "Scraper Worker (Python/RQ)",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "rq", "worker", "default"],
+      "port": 0
+    }
+  ]
+}
