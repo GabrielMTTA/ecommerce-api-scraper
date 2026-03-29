@@ -6,25 +6,10 @@ import pino from 'pino';
 import pinoHttp from 'pino-http';
 import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
+import scraperRouter from './api/scraper.routes.js';
 
 // Carregar variáveis de ambiente
 dotenv.config();
-
-// Validar variáveis críticas
-const requiredEnvVars = [
-  'DB_HOST',
-  'DB_PORT',
-  'DB_NAME',
-  'DB_USER',
-  'REDIS_HOST',
-  'REDIS_PORT',
-  'JWT_SECRET'
-];
-
-const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
-if (missingEnvVars.length > 0 && process.env.NODE_ENV !== 'test') {
-  throw new Error(`Variáveis de ambiente faltando: ${missingEnvVars.join(', ')}`);
-}
 
 // Logger
 const logger = pino({
@@ -103,6 +88,9 @@ app.get('/status', (_req: Request, res: Response) => {
     pid: process.pid
   });
 });
+
+// ====== API ROUTES ======
+app.use('/api', scraperRouter);
 
 // ====== TRATAMENTO DE ERROS ======
 
