@@ -27,6 +27,7 @@ SUPPORTED_SCRAPERS = {
     'adidas.com.br': 'adidas',
     'adidas.com': 'adidas',
     'centauro.com.br': 'centauro',
+    'netshoes.com.br': 'netshoes',
 }
 
 
@@ -68,6 +69,9 @@ def run(url: str) -> dict:
     elif scraper_name == 'centauro':
         from scrapers.centauro import CentauroScraper
         scraper = CentauroScraper(timeout=45, retries=1)
+    elif scraper_name == 'netshoes':
+        from scrapers.netshoes import NetshoesScraper
+        scraper = NetshoesScraper(timeout=30, retries=2)
     else:
         return {
             'status': 'failed',
