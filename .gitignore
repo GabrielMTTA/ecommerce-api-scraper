@@ -1,0 +1,71 @@
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+.env.production.local
+
+# Chaves e credenciais
+*.key
+*.pem
+*.p12
+*.pkcs12
+*.jks
+private_key*
+id_rsa*
+.ssh/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+.pytest_cache/
+.coverage
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+.docker/
+.dockerignore
+
+# Build outputs
+dist/
+build/
+*.tar.gz
+
+# Logs
+logs/
+*.log
+
+# Segredos
+secrets/
+.secrets/
+
+# Cache
+.cache/
+temp/
+tmp/
+
+# Banco de dados local
+*.db
+*.sqlite
+*.sqlite3
