@@ -93,6 +93,12 @@ export async function downloadImage(imageUrl: string, productId: string): Promis
 
       fileStream.on('finish', () => {
         fileStream.close();
+
+        // Auto-delete after 5 minutes
+        setTimeout(() => {
+          fs.unlink(filepath, () => {});
+        }, 5 * 60 * 1000);
+
         resolve(filepath);
       });
 
