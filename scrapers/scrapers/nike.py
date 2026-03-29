@@ -34,6 +34,7 @@ class NikeScraper(BaseScraper):
             options.add_argument('--disable-dev-shm-usage')
             options.add_argument('--disable-gpu')
             options.add_argument('--window-size=1920,1080')
+            options.add_argument('--window-position=-32000,-32000')
 
             self._driver = uc.Chrome(
                 options=options,
@@ -41,6 +42,7 @@ class NikeScraper(BaseScraper):
                 use_subprocess=True,
                 version_main=146,
             )
+            self._driver.minimize_window()
             self._driver.set_page_load_timeout(self.timeout + 15)
 
         return self._driver

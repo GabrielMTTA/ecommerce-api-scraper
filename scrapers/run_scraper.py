@@ -22,6 +22,11 @@ SUPPORTED_SCRAPERS = {
     'meli.la': 'mercado_livre',
     'nike.com.br': 'nike',
     'nike.com': 'nike',
+    'amazon.com.br': 'amazon',
+    'amazon.com': 'amazon',
+    'adidas.com.br': 'adidas',
+    'adidas.com': 'adidas',
+    'centauro.com.br': 'centauro',
 }
 
 
@@ -54,6 +59,15 @@ def run(url: str) -> dict:
     elif scraper_name == 'nike':
         from scrapers.nike import NikeScraper
         scraper = NikeScraper(timeout=45, retries=1)
+    elif scraper_name == 'amazon':
+        from scrapers.amazon import AmazonScraper
+        scraper = AmazonScraper(timeout=30, retries=2)
+    elif scraper_name == 'adidas':
+        from scrapers.adidas import AdidasScraper
+        scraper = AdidasScraper(timeout=45, retries=1)
+    elif scraper_name == 'centauro':
+        from scrapers.centauro import CentauroScraper
+        scraper = CentauroScraper(timeout=45, retries=1)
     else:
         return {
             'status': 'failed',
