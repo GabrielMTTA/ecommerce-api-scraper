@@ -7,13 +7,14 @@ RUN apk add --no-cache python3 make g++
 
 COPY package*.json ./
 
-RUN npm ci --only=production && \
+RUN npm ci && \
     npm cache clean --force
 
 COPY tsconfig.json ./
 COPY src ./src
 
-RUN npm run build
+RUN npm run build && \
+    npm prune --omit=dev
 
 # ====== STAGE 2: RUNTIME ======
 FROM node:18-alpine
