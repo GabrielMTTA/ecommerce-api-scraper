@@ -63,35 +63,33 @@ export class ScraperService {
         this.pythonPath,
         ['-c', `
 import sys, os, json
+sys.path.insert(0, os.environ.get('SCRAPERS_DIR', '.'))
 result = {}
 result['python'] = sys.version
 result['platform'] = sys.platform
 result['display'] = os.environ.get('DISPLAY', 'not set')
 result['chrome_bin'] = os.environ.get('CHROME_BIN', 'not set')
 
-# Check Chrome
 import shutil
-chrome = shutil.which('google-chrome-stable') or shutil.which('google-chrome') or shutil.which('chromium-browser')
-result['chrome_found'] = chrome
+result['chrome_found'] = shutil.which('google-chrome-stable') or shutil.which('google-chrome')
+result['xvfb_found'] = shutil.which('Xvfb')
 
-# Check Xvfb
-xvfb = shutil.which('Xvfb')
-result['xvfb_found'] = xvfb
-
-# Check if display works
-import subprocess
 try:
-    p = subprocess.run(['xdpyinfo', '-display', ':99'], capture_output=True, timeout=5)
-    result['display_active'] = p.returncode == 0
-except:
-    result['display_active'] = 'xdpyinfo not available'
-
-# Try Chrome
-try:
-    import undetected_chromedriver as uc
-    result['uc_version'] = uc.__version__ if hasattr(uc, '__version__') else 'unknown'
-except ImportError as e:
-    result['uc_error'] = str(e)
+    from chrome_utils import create_driver
+    driver = create_driver()
+    result['driver_created'] = True
+    driver.get('https://www.nike.com.br/')
+    import time
+    time.sleep(5)
+    result['title'] = driver.title
+    result['url'] = driver.current_url
+    result['page_length'] = len(driver.page_source)
+    result['blocked'] = 'Access Denied' in driver.page_source
+    driver.quit()
+except Exception as e:
+    result['driver_error'] = str(e)
+    import traceback
+    result['traceback'] = traceback.format_exc()
 
 print(json.dumps(result))
 `],
