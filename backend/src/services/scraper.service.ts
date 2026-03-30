@@ -79,7 +79,7 @@ export class ScraperService {
         [this.runnerScript, url],
         {
           cwd: this.scrapersDir,
-          timeout: 90000,
+          timeout: 180000,
           maxBuffer: 5 * 1024 * 1024,
           env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
         },
