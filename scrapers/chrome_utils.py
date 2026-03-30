@@ -44,10 +44,25 @@ def create_driver():
         if os.path.exists(chrome_bin):
             options.binary_location = chrome_bin
 
+        # Detect installed Chrome version to avoid driver mismatch
+        chrome_version = None
+        try:
+            import subprocess
+            result = subprocess.run(
+                [chrome_bin, '--version'], capture_output=True, text=True, timeout=5
+            )
+            version_match = __import__('re').search(r'(\d+)', result.stdout)
+            if version_match:
+                chrome_version = int(version_match.group(1))
+                logger.info(f"Chrome version detected: {chrome_version}")
+        except Exception:
+            pass
+
         driver = uc.Chrome(
             options=options,
             headless=False,
             use_subprocess=True,
+            version_main=chrome_version,
         )
     else:
         logger.info("Local environment - using off-screen Chrome")
