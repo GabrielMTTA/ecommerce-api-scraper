@@ -15,6 +15,12 @@ const SUPPORTED_DOMAINS = [
   'meli.la',
   'nike.com.br',
   'nike.com',
+  'amazon.com.br',
+  'amazon.com',
+  'adidas.com.br',
+  'adidas.com',
+  'centauro.com.br',
+  'netshoes.com.br',
 ];
 
 export class ScraperService {

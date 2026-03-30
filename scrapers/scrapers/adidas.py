@@ -28,25 +28,9 @@ class AdidasScraper(BaseScraper):
     def _get_driver(self):
         """Inicializar undetected-chromedriver para bypass de bot protection"""
         if self._driver is None:
-            import undetected_chromedriver as uc
-
-            options = uc.ChromeOptions()
-            options.add_argument('--no-sandbox')
-            options.add_argument('--disable-dev-shm-usage')
-            options.add_argument('--disable-gpu')
-            options.add_argument('--window-size=1920,1080')
-            options.add_argument('--window-position=-32000,-32000')
-            options.add_argument('--lang=pt-BR')
-
-            self._driver = uc.Chrome(
-                options=options,
-                headless=False,
-                use_subprocess=True,
-                version_main=146,
-            )
-            self._driver.minimize_window()
+            from chrome_utils import create_driver
+            self._driver = create_driver()
             self._driver.set_page_load_timeout(self.timeout + 15)
-
         return self._driver
 
     def validate_url(self, url: str) -> bool:

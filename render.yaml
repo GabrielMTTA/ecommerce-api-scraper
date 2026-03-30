@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: ecommerce-api-scraper
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      - key: LOG_LEVEL
+        value: info
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: "100"
+      - key: RATE_LIMIT_WINDOW_MS
+        value: "900000"
+      - key: SCRAPERS_DIR
+        value: /app/scrapers
+      - key: PYTHON_PATH
+        value: /app/scrapers/venv/bin/python
+    healthCheckPath: /health
