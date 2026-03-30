@@ -129,4 +129,14 @@ router.get('/jobs', (_req: Request, res: Response) => {
   });
 });
 
+// GET /api/debug/chrome - Test Chrome availability
+router.get('/debug/chrome', async (_req: Request, res: Response) => {
+  try {
+    const result = await scraperService.runDiagnostic();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
 export default router;

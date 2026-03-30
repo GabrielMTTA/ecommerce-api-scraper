@@ -57,6 +57,64 @@ export class ScraperService {
     return SUPPORTED_DOMAINS;
   }
 
+  runDiagnostic(): Promise<Record<string, unknown>> {
+    return new Promise((resolve) => {
+      execFile(
+        this.pythonPath,
+        ['-c', `
+import sys, os, json
+result = {}
+result['python'] = sys.version
+result['platform'] = sys.platform
+result['display'] = os.environ.get('DISPLAY', 'not set')
+result['chrome_bin'] = os.environ.get('CHROME_BIN', 'not set')
+
+# Check Chrome
+import shutil
+chrome = shutil.which('google-chrome-stable') or shutil.which('google-chrome') or shutil.which('chromium-browser')
+result['chrome_found'] = chrome
+
+# Check Xvfb
+xvfb = shutil.which('Xvfb')
+result['xvfb_found'] = xvfb
+
+# Check if display works
+import subprocess
+try:
+    p = subprocess.run(['xdpyinfo', '-display', ':99'], capture_output=True, timeout=5)
+    result['display_active'] = p.returncode == 0
+except:
+    result['display_active'] = 'xdpyinfo not available'
+
+# Try Chrome
+try:
+    import undetected_chromedriver as uc
+    result['uc_version'] = uc.__version__ if hasattr(uc, '__version__') else 'unknown'
+except ImportError as e:
+    result['uc_error'] = str(e)
+
+print(json.dumps(result))
+`],
+        {
+          cwd: this.scrapersDir,
+          timeout: 30000,
+          env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
+        },
+        (error, stdout, stderr) => {
+          if (error) {
+            resolve({ error: error.message, stderr: stderr?.substring(0, 500) });
+            return;
+          }
+          try {
+            resolve(JSON.parse(stdout.trim()));
+          } catch {
+            resolve({ stdout, stderr: stderr?.substring(0, 500) });
+          }
+        }
+      );
+    });
+  }
+
   runScraper(url: string): Promise<ScraperResult> {
     return new Promise((resolve, reject) => {
       if (this.activeProcesses >= this.maxConcurrent) {
