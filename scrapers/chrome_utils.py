@@ -20,8 +20,9 @@ def is_docker() -> bool:
 def create_driver():
     """
     Create an undetected-chromedriver instance.
-    - Docker/Render: headless with extra flags for containerized Chrome
-    - Local: off-screen window (not headless, bypasses all anti-bot)
+    - Docker/Render: uses Xvfb virtual display (non-headless, bypasses anti-bot)
+    - Local Windows: off-screen window (non-headless, bypasses anti-bot)
+    Both modes run Chrome as a real browser to avoid Akamai WAF detection.
     """
     import undetected_chromedriver as uc
 
@@ -35,12 +36,9 @@ def create_driver():
     in_container = is_docker()
 
     if in_container:
-        logger.info("Docker/Render detected - using headless Chrome")
-        options.add_argument('--headless=new')
+        logger.info("Docker/Render detected - using Xvfb virtual display")
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_argument('--disable-extensions')
-        options.add_argument('--disable-infobars')
-        options.add_argument('--single-process')
 
         chrome_bin = os.environ.get('CHROME_BIN', '/usr/bin/google-chrome-stable')
         if os.path.exists(chrome_bin):
@@ -48,7 +46,7 @@ def create_driver():
 
         driver = uc.Chrome(
             options=options,
-            headless=True,
+            headless=False,
             use_subprocess=True,
         )
     else:

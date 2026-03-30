@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xdg-utils \
     libu2f-udev \
     libvulkan1 \
+    xvfb \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Google Chrome
@@ -79,7 +80,8 @@ ENV NODE_ENV=production \
     SCRAPERS_DIR=/app/scrapers \
     PYTHON_PATH=/app/scrapers/venv/bin/python \
     PYTHONIOENCODING=utf-8 \
-    CHROME_BIN=/usr/bin/google-chrome-stable
+    CHROME_BIN=/usr/bin/google-chrome-stable \
+    DISPLAY=:99
 
 WORKDIR /app/backend
 
@@ -88,4 +90,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if (r.statusCode !== 200) throw new Error()})" || exit 1
 
-CMD ["node", "dist/index.js"]
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+CMD ["/app/entrypoint.sh"]
